@@ -4,6 +4,7 @@ from panda3d.core import Vec3
 WINDOW_TITLE = "Hella Driving"
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
+GAME_SCREEN_RATIO = 0.5
 
 # Camera
 CAMERA_OFFSET = Vec3(0, -12, 5)
@@ -24,3 +25,4 @@ GROUND_SIZE = 1000
 TREE_SCALE = 3.0
 TREE_SPACING = 28
 TREE_AREA = 400
+

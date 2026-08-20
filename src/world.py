@@ -52,3 +52,4 @@ class World:
                 tree.setPos(tree_x, tree_y, 0)
                 tree.setScale(settings.TREE_SCALE * random.uniform(0.8, 1.3))
                 tree.setH(random.uniform(0, 360))
+                tree.setP(90)

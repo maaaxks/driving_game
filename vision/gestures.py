@@ -220,7 +220,7 @@ class GestureAnalyzer:
         if angle < -90:
             angle += 180
 
-        steering = (angle / self.max_steering_angle)
+        steering = -(angle / self.max_steering_angle)
         steering = max(-1.0, min(1.0, steering))
         return angle, steering
 
