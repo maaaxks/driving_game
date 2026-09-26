@@ -1,6 +1,7 @@
 import math
 import cv2
-from panda3d.core import (Texture, CardMaker)
+from panda3d.core import (Texture, CardMaker, Camera, OrthographicLens)
+from src import settings
 
 
 class VisionDisplay:
@@ -13,14 +14,19 @@ class VisionDisplay:
         self.card = None
         self._create_display()
 
+    def set_display_region(self, display_region):
+        self.display_region = display_region
+        self.display_region.setCamera(self.camera_np)
+
     def _create_display(self):
         card_maker = CardMaker("vision_card")
 
+        aspect = settings.GAME_SCREEN_RATIO
         card_maker.setFrame(
+            -1,
+            1,
             -1.0,
-            1.0,
-            -1.0,
-            0.0
+            1.0
         )
 
         self.card = (
@@ -30,6 +36,7 @@ class VisionDisplay:
         )
 
         self.card.setTexture(self.texture)
+
 
     def _draw_hand_landmarks(self, frame, hand):
 
@@ -244,6 +251,26 @@ class VisionDisplay:
 
             y += 25
 
+    def _prepare_frame_for_display(self, frame):
+        target_ratio = (settings.GAME_SCREEN_RATIO)
+
+        height, width = frame.shape[:2]
+        current_ratio = width / height
+
+        if current_ratio > target_ratio:
+            new_width = int(height * target_ratio)
+            left = (width - new_width) // 2
+
+            frame = frame[:, left:left + new_width]
+
+        elif current_ratio < target_ratio:
+            new_height = int( width / target_ratio)
+            top = ( height - new_height ) // 2
+
+            frame = frame[top:top + new_height, :]
+
+        return frame
+
     def update(self):
         frame = (self.gesture_reader.get_frame())
         state = (self.gesture_reader.get_state())
@@ -259,7 +286,7 @@ class VisionDisplay:
 
         self._draw_virtual_wheel(frame, state)
         self._draw_info(frame, state, self.gesture_reader.vision.fps)
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame=(self._prepare_frame_for_display(frame))
         frame = cv2.flip(frame, 0)
         height, width = frame.shape[:2]
         self.texture.setup2dTexture(

@@ -14,6 +14,7 @@ class DrivingGame(ShowBase):
         super().__init__()
         self._setup_window()
         self.disableMouse()
+        self._setup_display_regions()
         self.world = World(self)
         self.car = Car(self)
         self.input = InputManager(self)
@@ -29,6 +30,34 @@ class DrivingGame(ShowBase):
         props.setTitle(settings.WINDOW_TITLE)
         props.setSize(settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT)
         self.win.requestProperties(props)
+
+    def _setup_display_regions(self):
+
+        game_region = (
+            self.cam.node().getDisplayRegion(0)
+        )
+
+        game_region.setDimensions(
+            0.0,
+            1.0,
+            0.5,
+            1.0,
+        )
+
+        game_region.setSort(0)
+
+        vision_region = (
+            self.cam2d.node().getDisplayRegion(0)
+        )
+
+        vision_region.setDimensions(
+            0.0,
+            1.0,
+            0.0,
+            0.5,
+        )
+
+        vision_region.setSort(1)
 
     def toggle_vision(self):
         enabled = (not self.input.vision_enabled)
